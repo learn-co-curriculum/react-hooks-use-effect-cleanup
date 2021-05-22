@@ -1,5 +1,9 @@
 # The useEffect Hook - Cleaning Up
 
+## Learning Goals
+
+- Use a cleanup function with `useEffect` to stop background processes
+
 ## Overview
 
 In the last lesson, we saw how to run functions as **side effects** of rendering
@@ -7,15 +11,11 @@ our components by using the `useEffect` hook. Here, we'll discuss best practices
 when it comes to cleaning up after those functions so we don't have unnecessary
 code running in the background when we no longer need it.
 
-## Objectives
-
-1. Return a cleanup function from our callback in the `useEffect` hook
-
 ## useEffect Cleanup
 
 When using the `useEffect` hook in a component, you might end up with some
-long-running code that you no longer need once the component is removed from
-the page. Here's an example of a component that runs a timer in the background
+long-running code that you no longer need once the component is removed from the
+page. Here's an example of a component that runs a timer in the background
 continuously:
 
 ```js
@@ -56,8 +56,8 @@ _also_ means we should stop the `setInterval` from running in the background. We
 need some way of cleaning up our side effect when the component is no longer
 needed!
 
-To demonstrate the issue, try clicking the "Toggle Clock" button &mdash;
-you'll likely see a warning message like this:
+To demonstrate the issue, try clicking the "Toggle Clock" button &mdash; you'll
+likely see a warning message like this:
 
 ```txt
 index.js:1 Warning: Can't perform a React state update on an unmounted
@@ -72,8 +72,9 @@ running in the background**, and updating state every second.
 
 React's solution is to have our `useEffect` function **return a cleanup
 function**, which will run after the component "un-mounts": when it is removed
-from the DOM after its parent component no longer returns it. Here's how the
-cleanup function would look:
+from the DOM after its parent component no longer returns it.
+
+Here's how the cleanup function would look:
 
 ```js
 function Clock() {
@@ -98,6 +99,32 @@ If you run this app again in the browser, and click the "Toggle Clock" button,
 you'll notice we no longer get that error message. That's because we have
 successfully cleaned up after our interval is no longer needed by running
 `clearInterval`.
+
+## Cleanup Function Lifecycle
+
+So far, we've explained the order of operations for our components like this:
+
+```txt
+render -> useEffect -> setState -> re-render -> useEffect
+```
+
+Where does the cleanup function fit in this order of operations? It is called by
+React **after the component re-renders** after setting state and **before the
+`useEffect` callback is called**, or **before the component is removed from the
+page** if it is no longer being returned by a parent component:
+
+```txt
+render -> useEffect -> setState -> re-render -> cleanup -> useEffect
+```
+
+Here's a way to visualize the different parts of the component lifecycle:
+
+![React component lifecycle diagram](https://curriculum-content.s3.amazonaws.com/phase-2/react-hooks-use-effect-cleanup/lifecycle.png)
+
+You can also check out this
+[CodeSandbox](https://codesandbox.io/s/react-hooks-lifecycle-wbgz1) example to
+visualize the component lifecycle by updating state in the example components,
+and viewing the output in the console.
 
 ## Conclusion
 
