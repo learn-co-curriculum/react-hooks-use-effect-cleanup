@@ -56,7 +56,7 @@ _also_ means we should stop the `setInterval` from running in the background. We
 need some way of cleaning up our side effect when the component is no longer
 needed!
 
-To demonstrate the issue, try clicking the "Toggle Clock" button &mdash; you'll
+To demonstrate the issue, try clicking the "Toggle Clock" button — you'll
 likely see a warning message like this:
 
 ```txt
