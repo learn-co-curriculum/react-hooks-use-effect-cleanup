@@ -18,7 +18,7 @@ long-running code that you no longer need once the component is removed from the
 page. Here's an example of a component that runs a timer in the background
 continuously:
 
-```js
+```jsx
 function Clock() {
   const [time, setTime] = useState(new Date());
 
@@ -38,7 +38,7 @@ time.
 
 We could use this Clock component like so:
 
-```js
+```jsx
 function App() {
   const [showClock, setShowClock] = useState(true);
 
@@ -76,7 +76,7 @@ from the DOM after its parent component no longer returns it.
 
 Here's how the cleanup function would look:
 
-```js
+```jsx
 function Clock() {
   const [time, setTime] = useState(new Date());
 
