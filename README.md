@@ -71,8 +71,8 @@ from the DOM, the `setInterval` function we called in `useEffect` is **still
 running in the background**, and updating state every second.
 
 React's solution is to have our `useEffect` function **return a cleanup
-function**, which will run after the component "un-mounts": when it is removed
-from the DOM after its parent component no longer returns it.
+function**, which will run when the component is unmounted, i.e., when it is no
+longer being returned by its parent.
 
 Here's how the cleanup function would look:
 
@@ -97,7 +97,7 @@ function Clock() {
 
 If you run this app again in the browser, and click the "Toggle Clock" button,
 you'll notice we no longer get that error message. That's because we have
-successfully cleaned up after our interval is no longer needed by running
+successsfully cleaned up after the unmounted component by running
 `clearInterval`.
 
 ## Cleanup Function Lifecycle
@@ -108,10 +108,22 @@ So far, we've explained the order of operations for our components like this:
 render -> useEffect -> setState -> re-render -> useEffect
 ```
 
-Where does the cleanup function fit in this order of operations? It is called by
-React **after the component re-renders** after setting state and **before the
-`useEffect` callback is called**, or **before the component is removed from the
-page** if it is no longer being returned by a parent component:
+Where does the cleanup function fit in this order of operations? To understand
+how the process works, let's think about the full component lifecycle. When the
+page loads initially, our clock is rendered to the page and `useEffect` is
+called for the first time, initiating the interval. When the page is
+*re-rendered* — i.e., when the Toggle button is clicked and `setState` is called
+— the cleanup function will be called right after the re-render happens:
+
+```txt
+render -> useEffect -> setState -> re-render -> cleanup
+```
+
+In our example, the update to the page causes the component to be unmounted so
+the cleanup is the last thing that occurs in the component's life. If, instead,
+the state of our component were being updated in some way — for example, if we
+had a button that would toggle between 12-hour and 24-hour time — the process
+would look like this:
 
 ```txt
 render -> useEffect -> setState -> re-render -> cleanup -> useEffect
@@ -123,8 +135,15 @@ Here's a way to visualize the different parts of the component lifecycle:
 
 You can also check out this
 [CodeSandbox](https://codesandbox.io/s/react-hooks-lifecycle-wbgz1) example to
-visualize the component lifecycle by updating state in the example components,
-and viewing the output in the console.
+visualize the component lifecycle. The code includes a series of calls to
+`useEffect` that log messages to the console. If you open the browser console,
+you can see the sequence of events that happens when the page first loads. Then,
+if you try clicking the buttons, the order of the logged messages will show the
+order in which the different stages occur. Note that, for each component
+(`Parent` and `Child`), there are three different `useEffect` calls: one with no
+dependencies array, one with an empty array, and one with `count` as a
+dependency. This enables you to see when `useEffect` and `cleanup` are called
+for each of the three options.
 
 ## Conclusion
 
