@@ -4,7 +4,7 @@
 
 - Use a cleanup function with `useEffect` to stop background processes
 
-## Overview
+## Introduction
 
 In the last lesson, we saw how to run functions as **side effects** of rendering
 our components by using the `useEffect` hook. Here, we'll discuss best practices
