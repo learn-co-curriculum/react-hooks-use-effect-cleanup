@@ -97,7 +97,7 @@ function Clock() {
 
 If you run this app again in the browser, and click the "Toggle Clock" button,
 you'll notice we no longer get that error message. That's because we have
-successsfully cleaned up after the unmounted component by running
+successfully cleaned up after the unmounted component by running
 `clearInterval`.
 
 ## Cleanup Function Lifecycle
@@ -108,25 +108,19 @@ So far, we've explained the order of operations for our components like this:
 render -> useEffect -> setState -> re-render -> useEffect
 ```
 
-Where does the cleanup function fit in this order of operations? To understand
-how the process works, let's think about the full component lifecycle. When the
-page loads initially, our clock is rendered to the page and `useEffect` is
-called for the first time, initiating the interval. When the page is
-*re-rendered* — i.e., when the Toggle button is clicked and `setState` is called
-— the cleanup function will be called right after the re-render happens:
-
-```txt
-render -> useEffect -> setState -> re-render -> cleanup
-```
-
-In our example, the update to the page causes the component to be unmounted so
-the cleanup is the last thing that occurs in the component's life. If, instead,
-the state of our component were being updated in some way — for example, if we
-had a button that would toggle between 12-hour and 24-hour time — the process
-would look like this:
+Where does the cleanup function fit in this order of operations? In general,
+it is called by React **after the component re-renders** as a result of setting
+state and **before the `useEffect` callback is called**:
 
 ```txt
 render -> useEffect -> setState -> re-render -> cleanup -> useEffect
+```
+
+If the change (as in our example) causes the component to be unmounted,
+the cleanup is the last thing that occurs in the component's life:
+
+```txt
+render -> useEffect -> setState -> re-render -> cleanup
 ```
 
 Here's a way to visualize the different parts of the component lifecycle:
